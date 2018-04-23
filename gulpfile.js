@@ -69,7 +69,7 @@ gulp.task('minify', function() {
         var m = content.match(/\/\*![\s\S]*?\*\//img);
         return m && m.join('\n') + '\n' || '';
     }
-  })).pipe(gulp.dest('dest'));
+  })).pipe(gulp.dest('dist'));
 });
 
 
