@@ -1,6 +1,8 @@
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
 const sass = require('gulp-sass');
+const minify = require('gulp-minifier');
+const autoprefixer = require('gulp-autoprefixer');
 
 
 
@@ -42,4 +44,34 @@ gulp.task('fa', function() {
         .pipe(gulp.dest('src/css'))
 })
 
-gulp.task('default', ['js', 'serve', 'fa', 'fonts']);
+ 
+gulp.task('prefix', () =>
+    gulp.src('src/**/*.css')
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
+        .pipe(gulp.dest('dist'))
+);
+ 
+gulp.task('minify', function() {
+  return gulp.src('src/**/*').pipe(minify({
+    minify: true,
+    minifyHTML: {
+      collapseWhitespace: true,
+      conservativeCollapse: true,
+    },
+    minifyJS: {
+      sourceMap: true
+    },
+    minifyCSS: true,
+    getKeptComment: function (content, filePath) {
+        var m = content.match(/\/\*![\s\S]*?\*\//img);
+        return m && m.join('\n') + '\n' || '';
+    }
+  })).pipe(gulp.dest('dest'));
+});
+
+
+
+gulp.task('default', ['js', 'serve', 'fa', 'fonts', 'prefix', 'minify']);
